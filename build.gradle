@@ -1,0 +1,50 @@
+/**
+ * Gradle plugins
+ */
+plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'java'
+}
+/**
+ * Project Variables
+ */
+group = 'com.brov3r.bytemorph'
+version = '1.0'
+
+
+/**
+ * Path to the compiled Jar file
+ */
+def buildPath = System.getenv('BUILD_PATH') ?: 'build';
+
+/**
+ * Repositories for project dependencies
+ */
+repositories {
+    mavenCentral()
+}
+
+/**
+ * Project Dependencies
+ */
+dependencies {
+    implementation('org.javassist:javassist:3.30.2-GA')
+}
+
+/**
+ * Creating a Jar file
+ */
+shadowJar {
+    archiveFileName.set("${rootProject.name}-${version}.jar")
+    destinationDirectory.set(file(buildPath))
+
+    manifest {
+        attributes(
+                'Implementation-Title': rootProject.name,
+                'Implementation-Version': version,
+                'Agent-Class': 'com.brov3r.bytemorph.Agent',
+                'Can-Redefine-Classes': 'true',
+                'Can-Retransform-Classes': 'true'
+        )
+    }
+}
